@@ -42,5 +42,22 @@ class MicropostsController extends Controller
         // 前のURLへリダイレクトさせる
         return back();
     }
+    
+    public function destroy($id)
+    {
+        // idの値で投稿を検索して取得
+        $micropost = \App\Models\Micropost::findOrFail($id);
+        
+        // 認証済みユーザ（閲覧者）がその投稿の所有者である場合は投稿を削除
+        if (\Auth::id() === $micropost->user_id) {
+            $micropost->delete();
+            return back()
+                ->with('success','Delete Successful');
+        }
 
+        // 前のURLへリダイレクトさせる
+        return back()
+            ->with('Delete Failed');
+    }
+    
 }
