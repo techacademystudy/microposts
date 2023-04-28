@@ -42,6 +42,7 @@
                                                 onclick="return confirm('Delete id = {{ $favorite->id }} ?')">Delete</button>
                                         </form>
                                     @endif
+                                    <!--gittest-->
                                 </div>
                             @else
                                 {{-- お気に入りしていないので、お気に入りボタを表示 --}}
