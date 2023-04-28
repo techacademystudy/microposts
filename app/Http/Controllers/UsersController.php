@@ -86,4 +86,17 @@ class UsersController extends Controller
         ]);
     }
     
+    public function favorites($id)
+    {
+        // お気に入りの数をロード
+                
+        $user = User::findOrFail($id);
+        $user->loadRelationshipCounts();
+        $favorites = $user->favorites()->get();
+        return view('users.favorites', [
+            'user' => $user,
+            'favorites' => $favorites,
+        ]);
+    }
+
 }

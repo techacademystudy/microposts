@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
@@ -55,8 +56,8 @@ class User extends Authenticatable
      */
     public function loadRelationshipCounts()
     {
-        //このメソッドでは、'microposts', 'followings', 'followers'それぞれのメソッドのレコード数を取得する。
-        $this->loadCount(['microposts', 'followings', 'followers']);
+        //このメソッドでは、'microposts', 'followings', 'followers', 'favorites'それぞれのメソッドのレコード数を取得する。
+        $this->loadCount(['microposts', 'followings', 'followers', 'favorites']);
     }
 
     /**
@@ -161,7 +162,8 @@ class User extends Authenticatable
         // お気に入り先が自分の投稿かどうかを確認する
         $its_me = $this->microposts()->where('id', $micropostId)->where('user_id', $this->id)->exists();
     
-        if ($exist || $its_me) {
+        // if ($exist || $its_me) { //自分の投稿であれば、お気に入りできないようにする
+         if ($exist) {
             // 既にお気に入り済みであれば何もしない
             return false;
         } else {
@@ -170,31 +172,34 @@ class User extends Authenticatable
             return true;
         }
     }
-
-public function unfavorite($micropostId)
-{
-    // 既にお気に入り済みか確認する
-    $exist = $this->is_favoriting($micropostId);
-
-    if ($exist) {
-        $this->favorites()->detach($micropostId);
-        return true;
-    } else {
-        return false;
+    
+    public function is_myposts($micropostId)
+    {
+        // お気に入り先が自分の投稿かどうかを確認する
+        $its_me = $this->microposts()->where('id', $micropostId)->where('user_id', Auth::user()->id)->exists();
+        if ($its_me == true) {
+            // 自分の投稿
+            return true;
+        } else {
+            // 他人の投稿
+            return false;
+        }
     }
 
+    public function unfavorite($micropostId)
+    {
+        // 既にお気に入り済みか確認する
+        $exist = $this->is_favoriting($micropostId);
     
-        // if ($exist && !$its_me) {
-        //     // 既にお気に入り済みであればお気に入りを外す
-        //     $this->favorites()->detach($micropostId);
-        //     return true;
-        // } else {
-        //     // 未お気に入りであれば何もしない
-        //     return false;
-        // }
+        if ($exist) {
+            $this->favorites()->detach($micropostId);
+            return true;
+        } else {
+            return false;
+        }
     }
     
-        public function is_favoriting($micropostId) {
+    public function is_favoriting($micropostId) {
         return $this->favorites()->where('micropost_id', $micropostId)->exists();
     }
 

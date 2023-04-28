@@ -15,36 +15,38 @@ class FavoriteController extends Controller
     public function store($id)
     {
         $micropost = Micropost::find($id);
-        $micropost->favorite(Auth::user()->id);
+        // $result = $micropost->favorite(Auth::user()->id);
+        $result = Auth::user()->favorite($id);
         return back();
     }
 
-
-public function destroy($id)
-{
-    $micropost = Micropost::find($id);
-    $result = Auth::user()->unfavorite($id);
-
-    if ($result) {
-        // お気に入り解除成功
-        session()->flash('success', 'お気に入りを解除しました。');
-    } else {
-        // 他人のお気に入りで解除できない場合
-        session()->flash('danger', 'このお気に入りは解除できません。');
+    public function destroy($id)
+    {
+        $micropost = Micropost::find($id);
+        $result = Auth::user()->unfavorite($id);
+    
+        if ($result) {
+            // お気に入り解除成功
+            session()->flash('success', 'お気に入りを解除しました。');
+        } else {
+            // 他人のお気に入りで解除できない場合
+            session()->flash('danger', 'このお気に入りは解除できません。');
+        }
+    
+        return back();
+    }
+    
+    public function favorites($id)
+    {
+                // 関係するモデルの件数をロード
+                
+        $user = User::findOrFail($id);
+        $user->loadRelationshipCounts();
+        $favorites = $user->favorites()->get();
+        return view('users.favorites', [
+            'user' => $user,
+            'favorites' => $favorites,
+        ]);
     }
 
-    return back();
-}
-
-
-public function favorites($id)
-{
-    $user = User::findOrFail($id);
-    $favorites = $user->favorites()->get();
-    return view('users.favorites', [
-        'user' => $user,
-        'favorites' => $favorites,
-    ]);
-}
-    
 }

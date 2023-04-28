@@ -30,7 +30,7 @@ Route::group(['middleware' => ['auth']], function () {
             Route::delete('unfollow', [UserFollowController::class, 'destroy'])->name('user.unfollow'); // 追記
             Route::get('followings', [UsersController::class, 'followings'])->name('users.followings'); // 追記
             Route::get('followers', [UsersController::class, 'followers'])->name('users.followers');    // 追記
-            // Route::get('favorites', [UsersController::class, 'favorites'])->name('users.favorites');            // 追加
+            Route::get('favorites', [UsersController::class, 'favorites'])->name('users.favorites');            // 追加
 
         });
 
@@ -43,8 +43,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('microposts', MicropostsController::class, ['only' => ['store', 'destroy']]);
 });
 // 「該当ユーザーのお気に入り一覧を取得する」ログイン状態を問わない
-Route::get('/users/{id}/favorites', [FavoriteController::class, 'favorites'])
-    ->name('users.favorites');
+// Route::get('/users/{id}/favorites', [FavoriteController::class, 'favorites'])
+//     ->name('users.favorites');
     
 // 「該当投稿をお気に入りしているユーザー一覧を取得する」ログイン状態を問わない
 Route::get('/microposts/{id}/favorited_by', [FavoriteController::class, 'favorited_by'])
