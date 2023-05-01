@@ -19,7 +19,7 @@
                         </div>
                         <div>
                             {{-- 投稿内容 --}}
-                            <p class="mb-0">{!! nl2br(e($favorite->content)) !!}</p>
+                            <p class="mb-0">{!! nl2br(e($favorite->content)) !!}</p><p>adhawy</p>
                         </div>
                         <div>
                             {{-- 既にお気に入り済みか判定 --}}

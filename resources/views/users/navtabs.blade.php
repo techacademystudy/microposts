@@ -1,7 +1,7 @@
 <div class="tabs">
     {{-- ユーザ詳細タブ --}}
     <a href="{{ route('users.show', $user->id) }}" class="tab tab-lifted grow {{ Request::routeIs('users.show') ? 'tab-active' : '' }}">
-        TimeLine
+        TimeLinea
         <div class="badge ml-1">{{ $user->microposts_count }}</div>
     </a>
     {{-- フォロー一覧タブ --}}
